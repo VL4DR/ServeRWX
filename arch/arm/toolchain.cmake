@@ -19,12 +19,11 @@ if (NOT DEFINED ARCH)
 endif ()
 message(STATUS "Using architecture ${ARCH}")
 
-if (NOT DEFINED THUMB)
-    set(ARM_MODE    arm)
+if (DEFINED THUMB)
+    set(THUMB_COMPILE_FLAG    -mthumb)
+    message(STATUS "Using Thumb mode")
 else ()
-    set(ARM_MODE    thumb)
-endif ()
-message(STATUS "Using ARM mode ${ARM_MODE}")
+    message(STATUS "Using ARM mode")
 
 # Path to compiler binaries
 set(TOOLCHAIN_BIN_DIR "${TOOLCHAIN_PATH}/bin")
@@ -35,7 +34,7 @@ set(CMAKE_CXX_COMPILER "${TOOLCHAIN_BIN_DIR}/arm-none-eabi-g++")
 set(CMAKE_ASM_COMPILER "${TOOLCHAIN_BIN_DIR}/arm-none-eabi-gcc")
 
 # Compiler flags
-set(CMAKE_C_FLAGS_INIT "-march=${ARCH} -m${ARM_MODE} -Os -fPIC -m${ENDIANESS}-endian -nostdlib -ffreestanding -fno-stack-protector ${ADDITIONAL_C_FLAGS}")
+set(CMAKE_C_FLAGS_INIT "-march=${ARCH} ${THUMB_COMPILE_FLAG} -Os -fPIC -m${ENDIANESS}-endian -nostdlib -ffreestanding -fno-stack-protector ${ADDITIONAL_C_FLAGS}")
 set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS_INIT} CACHE STRING "C flags used by the compiler")
 
 # Bare-metal: no OS, minimal runtime
