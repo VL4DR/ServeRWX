@@ -8,7 +8,7 @@ function(server_create_executable target_name)
         message(FATAL_ERROR "No sources provided to server_create_executable")
     endif()
 
-    add_executable(${target_name} ${APP_SOURCES})
+    add_executable(${target_name} ${SERVER_SOURCES})
     target_link_libraries(${target_name} PRIVATE server_core)
 
     message(STATUS "Configured application ${target_name} with server framework")
