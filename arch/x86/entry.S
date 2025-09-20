@@ -8,7 +8,7 @@ push edx
 push edi
 push esi
 mov eax, esp
-sub eax, 0x18
+add eax, 0x18
 push eax
 mov eax, esp
 push esp

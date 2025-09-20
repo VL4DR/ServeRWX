@@ -6,3 +6,4 @@
 
 #define IN
 #define OUT
+#define OPTIONAL
