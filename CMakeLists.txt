@@ -1,0 +1,38 @@
+cmake_minimum_required(VERSION 3.15)
+
+if (NOT DEFINED ARCH)
+    message(FATAL_ERROR "Please define the ARCH cmake variable!")
+endif ()
+
+include(arch/${ARCH}/toolchain.cmake)
+
+project(server
+    C
+    ASM
+)
+
+set(SERVER_MAX_DATA_SIZE 0x100 CACHE STRING "The maximum data size for server requests and responses")
+set(SERVER_MAGIC 0xDEADBEEF CACHE STRING "The magic to be used for the server")
+
+configure_file(src/server/server_exports.h.in
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/server/server_exports.h
+)
+
+file(COPY arch/${ARCH}/arch_defs.h 
+    DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include/server/
+)
+
+set(SERVER_SOURCES  
+    src/server/server.c
+    src/utils/utils.c
+    arch/${ARCH}/entry.S
+)
+
+add_library(server_core
+    ${SERVER_SOURCES}
+)
+
+target_include_directories(server_core 
+    PUBLIC include
+    PRIVATE src
+)

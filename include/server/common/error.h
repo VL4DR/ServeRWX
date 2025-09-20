@@ -1,0 +1,12 @@
+#pragma once
+
+enum server_status
+{
+    SERVER_SUCCESS = 0,
+    SERVER_NULL_PARAMETER,
+    SERVER_INVALID_PARAMETER,
+    SERVER_UNIMPLEMENTED,
+    SERVER_INVALID_MAGIC,
+
+    SERVER_UNKNOWN = 0x100,
+};
