@@ -2,8 +2,6 @@
 
 .section .server_entry, "ax"
 
-#define THUMB
-
 #ifdef THUMB
 .syntax unified
 .thumb
