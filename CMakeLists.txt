@@ -11,7 +11,7 @@ project(server
     ASM
 )
 
-set(SERVER_FRAMEWORK_ROOT_DIR   ${CMAKE_CURRENT_LIST_DIR})
+set(SERVER_FRAMEWORK_ROOT_DIR  CACHE ${CMAKE_CURRENT_LIST_DIR})
 
 set(SERVER_MAX_DATA_SIZE 0x100 CACHE STRING "The maximum data size for server requests and responses")
 set(SERVER_MAGIC 0xDEADBEEF CACHE STRING "The magic to be used for the server")
