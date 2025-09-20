@@ -11,7 +11,7 @@ function(server_create_executable target_name)
     add_executable(${target_name} ${SERVER_SOURCES})
     target_link_libraries(${target_name} PRIVATE server_core)
     target_link_options(${target_name} PRIVATE "-Wl,--whole-archive")
-    target_link_options(${target_name} PRIVATE "-T${CURRENT_CMAKE_LIST_DIR}/../arch/${ARCH}/ldscript.ld")
+    target_link_options(${target_name} PRIVATE "-T${CMAKE_CURRENT_LIST_DIR}/../arch/${ARCH}/ldscript.ld")
 
     message(STATUS "Configured application ${target_name} with server framework")
 endfunction()
