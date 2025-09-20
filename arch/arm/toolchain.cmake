@@ -24,6 +24,7 @@ if (NOT DEFINED THUMB)
 else ()
     set(ARM_MODE    thumb)
 endif ()
+message(STATUS "Using ARM mode ${ARM_MODE}")
 
 # Path to compiler binaries
 set(TOOLCHAIN_BIN_DIR "${TOOLCHAIN_PATH}/bin")
@@ -35,9 +36,11 @@ set(CMAKE_ASM_COMPILER "${TOOLCHAIN_BIN_DIR}/arm-none-eabi-gcc")
 
 # Compiler flags
 set(CMAKE_C_FLAGS_INIT "-mcpu=${ARM_MODE} -march=${ARCH} -Os -fPIC -m${ENDIANESS}-endian -nostdlib -ffreestanding -fno-stack-protector ${ADDITIONAL_C_FLAGS}")
+set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS_INIT} CACHE STRING "C flags used by the compiler")
 
 # Bare-metal: no OS, minimal runtime
 set(CMAKE_EXE_LINKER_FLAGS_INIT "-nostdlib ${ADDITIONAL_LINKER_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS  ${CMAKE_EXE_LINKER_FLAGS_INIT} CACHE STRING "Linker flags")
 
 # Search only inside toolchain for headers/libs
 set(CMAKE_FIND_ROOT_PATH "${TOOLCHAIN_PATH}")
