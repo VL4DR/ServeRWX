@@ -6,6 +6,11 @@ endif ()
 
 include(arch/${ARCH}/toolchain.cmake)
 
+project(server
+    C
+    ASM
+)
+
 set(SERVER_MAX_DATA_SIZE 0x100 CACHE STRING "The maximum data size for server requests and responses")
 set(SERVER_MAGIC 0xDEADBEEF CACHE STRING "The magic to be used for the server")
 
