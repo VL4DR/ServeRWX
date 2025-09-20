@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.15)
 
-if (NOT DEFINED ARCH)
-    message(FATAL_ERROR "Please define the ARCH cmake variable!")
+if (NOT DEFINED CPU)
+    message(FATAL_ERROR "Please define the CPU cmake variable!")
 endif ()
 
-include(arch/${ARCH}/toolchain.cmake)
+include(arch/${CPU}/toolchain.cmake)
 
 project(server
     C
@@ -20,14 +20,14 @@ configure_file(src/server/server_exports.h.in
     ${CMAKE_CURRENT_SOURCE_DIR}/include/server/server_exports.h
 )
 
-file(COPY arch/${ARCH}/arch_defs.h 
+file(COPY arch/${CPU}/arch_defs.h 
     DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include/server/
 )
 
 set(SERVER_SOURCES  
     src/server/server.c
     src/utils/utils.c
-    arch/${ARCH}/entry.S
+    arch/${CPU}/entry.S
 )
 
 add_library(server_core
