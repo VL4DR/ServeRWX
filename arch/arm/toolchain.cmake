@@ -24,6 +24,7 @@ if (DEFINED THUMB)
     message(STATUS "Using Thumb mode")
 else ()
     message(STATUS "Using ARM mode")
+endif ()
 
 # Path to compiler binaries
 set(TOOLCHAIN_BIN_DIR "${TOOLCHAIN_PATH}/bin")
