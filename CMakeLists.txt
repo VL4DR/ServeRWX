@@ -16,7 +16,7 @@ set(SERVER_FRAMEWORK_ROOT_DIR ${CMAKE_CURRENT_LIST_DIR} CACHE STRING "Root direc
 set(SERVER_MAX_DATA_SIZE 0x100 CACHE STRING "The maximum data size for server requests and responses")
 set(SERVER_MAGIC 0xDEADBEEF CACHE STRING "The magic to be used for the server")
 
-set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS_INIT} CACHE STRING "" FORCE)
+set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS_INIT})
 
 configure_file(src/server/server_exports.h.in
     ${CMAKE_CURRENT_SOURCE_DIR}/include/server/server_exports.h
