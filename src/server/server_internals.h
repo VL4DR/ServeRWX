@@ -6,6 +6,9 @@
 
 typedef value_t (*function_t)(value_t arg1, value_t arg2, value_t arg3, value_t arg4);
 
+/* @todo some (or all) of these structs are likely to be exported later on to allow users
+    to extend the server's functionality.
+*/
 #pragma pack(push, 1)
 struct request_header
 {

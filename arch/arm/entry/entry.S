@@ -5,6 +5,9 @@
 #ifdef THUMB
 .syntax unified
 .thumb
+#endif
+
+#ifdef THUMB
 PUSH.W {R0-R12}
 #else
 PUSH {R0-R12}

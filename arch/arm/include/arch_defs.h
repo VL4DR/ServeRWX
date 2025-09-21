@@ -2,6 +2,8 @@
 
 #include "common/common.h"
 
+#define SERVER_ENTRY_ABI        __attribute__((pcs("aapcs")))
+
 typedef uint32_t address_t;
 typedef uint32_t value_t;
 

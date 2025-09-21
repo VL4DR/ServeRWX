@@ -65,6 +65,12 @@ static enum server_status handle_call_request(IN struct server_request *request,
 
     DEBUG_LOG("Executing function!\n");
     call_function = (function_t)request->data.as_call_request.address;
+
+    /* @todo this function call's calling convention is the same as the chosen
+        calling convention for the server, but there may be several functions with
+        different calling conventions in the same binary, see if there's an easy
+        way to have the user choose a calling convention here.
+    */
     return_value = call_function(request->data.as_call_request.arg1,
                                 request->data.as_call_request.arg2,
                                 request->data.as_call_request.arg3,
@@ -108,7 +114,6 @@ static enum server_status dispatch_request(IN struct server_request *request, OU
             break;
     }
 
-cleanup:
     return status;
 }
 
@@ -137,9 +142,8 @@ static void handle_server_request(IN struct server_request *request, OUT struct 
     response->header.status = status;
 }
 
-void server__entry(IN OUT struct register_context *context)
+void SERVER_ENTRY_ABI server__entry(IN OUT struct register_context *context)
 {
-    enum server_status status = SERVER_UNKNOWN;
     void *input_request = NULL;
     struct server_response response;
     uint32_t response_size = 0;
