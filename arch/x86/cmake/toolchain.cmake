@@ -57,8 +57,8 @@ set(CMAKE_ASM_COMPILER "${TOOLCHAIN_BIN_DIR}/gcc.exe")
 # Compiler flags
 set(CMAKE_C_FLAGS_INIT "-march=${ARCH} -m${X86_BITNESS} -mabi=${CCONVENTION} -Os -fPIC -nostdlib -ffreestanding -fno-stack-protector -Wall ${ADDITIONAL_C_FLAGS}")
 set(CMAKE_ASM_FLAGS_INIT "-march=${ARCH} -m${X86_BITNESS}")
-set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS_INIT})
-set(CMAKE_ASM_FLAGS ${CMAKE_ASM_FLAGS_INIT})
+set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS_INIT} CACHE STRING "")
+set(CMAKE_ASM_FLAGS ${CMAKE_ASM_FLAGS_INIT} CACHE STRING "")
 
 # Bare-metal: no OS, minimal runtime
 set(CMAKE_EXE_LINKER_FLAGS_INIT "-nostdlib ${ADDITIONAL_LINKER_FLAGS}")
