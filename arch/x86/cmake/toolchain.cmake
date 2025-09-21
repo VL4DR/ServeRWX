@@ -55,7 +55,7 @@ set(CMAKE_CXX_COMPILER "${TOOLCHAIN_BIN_DIR}/g++.exe")
 set(CMAKE_ASM_COMPILER "${TOOLCHAIN_BIN_DIR}/gcc.exe" CACHE STRING "")
 
 # Compiler flags
-set(CMAKE_C_FLAGS_INIT "-march=${ARCH} -m${X86_BITNESS} -mabi=${CCONVENTION} -Os -fPIC -nostdlib -ffreestanding -fno-leading-underscore -fno-stack-protector -Wall ${ADDITIONAL_C_FLAGS}")
+set(CMAKE_C_FLAGS_INIT "-march=${ARCH} -m${X86_BITNESS} -mabi=${CCONVENTION} -Os -fPIC -nostdlib -ffreestanding -fno-leading-underscore -fno-stack-protector -fno-jump-tables -Wall ${ADDITIONAL_C_FLAGS}")
 set(CMAKE_ASM_FLAGS_INIT "-march=${ARCH} -m${X86_BITNESS}")
 set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS_INIT} CACHE STRING "")
 set(CMAKE_ASM_FLAGS ${CMAKE_ASM_FLAGS_INIT} CACHE STRING "")

@@ -12,8 +12,7 @@ SECTIONS
 
     .data : {
         *(.data)
-        *(.rdata)
-        *(.reloc)
+         *(.rdata)
         *(.got)
     } > server_code
 
