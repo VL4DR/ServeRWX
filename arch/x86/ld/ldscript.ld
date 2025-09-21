@@ -1,6 +1,6 @@
 MEMORY
 {
-    server_code (rx) : ORIGIN = 0, LENGTH = 0x1000
+    server_code (rx) : ORIGIN = 0, LENGTH = 0x3000
 }
 
 SECTIONS
