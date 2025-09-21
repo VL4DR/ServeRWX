@@ -1,3 +1,5 @@
+ENTRY(server__entry)
+
 MEMORY
 {
     server_code (rx) : ORIGIN = 0, LENGTH = 0x3000
