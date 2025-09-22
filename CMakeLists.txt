@@ -20,7 +20,7 @@ configure_file(src/server/server_exports.h.in
     ${CMAKE_CURRENT_SOURCE_DIR}/include/server/server_exports.h
 )
 
-message(STATUS "arch/${CPU}/include/arch_defs.h" )
+message(STATUS "arch/${CPU}/include/arch_defs.h")
 file(COPY arch/${CPU}/include/arch_defs.h 
     DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/include/server/
 )
