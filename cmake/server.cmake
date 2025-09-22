@@ -4,8 +4,8 @@ function(server_create_executable target_name)
     set(multiValueArgs SOURCES)
     cmake_parse_arguments(SERVER "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    set(TARGET_PATH         ${CMAKE_CURRENT_BINARY_PATH}/${target_name})
-    set(TARGET_BIN_PATH     ${CMAKE_CURRENT_BINARY_PATH}/${target_name}.bin)
+    set(TARGET_PATH         ${CMAKE_CURRENT_BINARY_DIR}/${target_name})
+    set(TARGET_BIN_PATH     ${CMAKE_CURRENT_BINARY_DIR}/${target_name}.bin)
 
     if(NOT SERVER_SOURCES)
         message(FATAL_ERROR "No sources provided to server_create_executable")
