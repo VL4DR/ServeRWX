@@ -46,9 +46,9 @@ endif ()
 set(TOOLCHAIN_BIN_DIR "${TOOLCHAIN_PATH}/bin")
 
 # Compilers
-set(CMAKE_C_COMPILER   "${TOOLCHAIN_BIN_DIR}/arm-none-eabi-gcc.exe")
-set(CMAKE_CXX_COMPILER "${TOOLCHAIN_BIN_DIR}/arm-none-eabi-g++.exe")
-set(CMAKE_ASM_COMPILER "${TOOLCHAIN_BIN_DIR}/arm-none-eabi-gcc.exe")
+set(CMAKE_C_COMPILER   "${TOOLCHAIN_BIN_DIR}/arm-none-eabi-gcc")
+set(CMAKE_CXX_COMPILER "${TOOLCHAIN_BIN_DIR}/arm-none-eabi-g++")
+set(CMAKE_ASM_COMPILER "${TOOLCHAIN_BIN_DIR}/arm-none-eabi-gcc")
 
 # Compiler flags
 set(CMAKE_C_FLAGS_INIT "-march=${ARCH} ${THUMB_COMPILE_FLAG} -Os -fPIC -m${ENDIANESS}-endian -nostdlib -ffreestanding -fno-stack-protector -Wall ${ADDITIONAL_C_FLAGS}")
