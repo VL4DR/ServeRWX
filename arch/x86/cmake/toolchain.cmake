@@ -32,7 +32,7 @@ if (X64)
     endif ()
 
     set(X86_BITNESS     64)
-    add_compile_definitions(-DCOMPILE_X64)
+    add_compile_definitions(COMPILE_X64)
 else ()
     if (DEFINED ARCH)
         if (NOT ${ARCH} IN_LIST X86_ARCH_LIST)
