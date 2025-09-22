@@ -7,7 +7,7 @@ SECTIONS
 {
     .text : {
         *(.server_entry)
-        *(.text)
+        *(.text*)
     } > server_code
 
     .data : {
@@ -27,5 +27,6 @@ SECTIONS
         *(.hash)
         *(.gnu.hash)
         *(.header)
+        *(.note*)
     } : phdr
 }

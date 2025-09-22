@@ -18,4 +18,14 @@ SECTIONS
     .bss : {
         *(.bss)
     }
+
+    /DISCARD/ : {
+        *(.interp)
+        *(.dynsym)
+        *(.dynstr)
+        *(.hash)
+        *(.gnu.hash)
+        *(.header)
+        *(.note*)
+    }
 }
