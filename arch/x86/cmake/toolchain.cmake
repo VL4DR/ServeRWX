@@ -50,10 +50,9 @@ message(STATUS "Using ${ARCH} x86_${X86_BITNESS}")
 set(TOOLCHAIN_BIN_DIR "${TOOLCHAIN_PATH}/bin")
 
 # Compilers
-set(CMAKE_C_COMPILER   "${TOOLCHAIN_BIN_DIR}/gcc")
-set(CMAKE_CXX_COMPILER "${TOOLCHAIN_BIN_DIR}/g++")
-set(CMAKE_ASM_COMPILER "${TOOLCHAIN_BIN_DIR}/gcc")
-set(CMAKE_OBJCOPY      "${TOOLCHAIN_BIN_DIR}/objcopy")
+set(CMAKE_C_COMPILER   "${TOOLCHAIN_BIN_DIR}/gcc" CACHE STRING "")
+set(CMAKE_ASM_COMPILER "${TOOLCHAIN_BIN_DIR}/gcc" CACHE STRING "")
+set(CMAKE_OBJCOPY      "${TOOLCHAIN_BIN_DIR}/objcopy" CACHE STRING "")
 
 # Compiler flags
 set(CMAKE_C_FLAGS_INIT "-march=${ARCH} -m${X86_BITNESS} -mabi=${CCONVENTION} -Os -fPIC -nostdlib -ffreestanding -fno-leading-underscore -fno-stack-protector -fno-jump-tables -Wall ${ADDITIONAL_C_FLAGS}")
