@@ -12,12 +12,13 @@ SECTIONS
 
     .data : {
         *(.data)
-        *(.got)
+        *(.rodata)
+        *(.got*)
     } > server_code
 
     .bss : {
         *(.bss)
-    }
+    } > server_code
 
     /DISCARD/ : {
         *(.interp)

@@ -1,6 +1,6 @@
 MEMORY
 {
-    server_code (rx) : ORIGIN = 0, LENGTH = 0x3000
+    server_code (rx) : ORIGIN = 0, LENGTH = 0x1000
 }
 
 SECTIONS
@@ -13,12 +13,12 @@ SECTIONS
     .data : {
         *(.data)
         *(.rodata)
-        *(.got)
+        *(.got*)
     } > server_code
 
     .bss : {
         *(.bss)
-    }
+    } > server_code
 
     /DISCARD/ : {
         *(.interp)
