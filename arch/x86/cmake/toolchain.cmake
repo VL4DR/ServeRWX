@@ -62,7 +62,7 @@ set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS_INIT})
 set(CMAKE_ASM_FLAGS ${CMAKE_ASM_FLAGS_INIT})
 
 # Bare-metal: no OS, minimal runtime
-set(CMAKE_EXE_LINKER_FLAGS_INIT "-Wl,--build_id=none ${ADDITIONAL_LINKER_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS_INIT "-Wl,--build-id=none ${ADDITIONAL_LINKER_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS  ${CMAKE_EXE_LINKER_FLAGS_INIT} CACHE STRING "Linker flags")
 
 # Search only inside toolchain for headers/libs
