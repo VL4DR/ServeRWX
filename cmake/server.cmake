@@ -19,7 +19,7 @@ function(server_create_executable target_name)
     add_custom_command(
         POST_BUILD
         TARGET ${target_name}
-        COMMAND ${CMAKE_OBJCOPY} ${TARGET_PATH} -j .text -O binary ${TARGET_BIN_PATH}
+        COMMAND ${CMAKE_OBJCOPY} -j .text -j .data -O binary ${TARGET_PATH} ${TARGET_BIN_PATH}
     )
 
     message(STATUS "Configured application ${target_name} with server framework")
