@@ -1,5 +1,3 @@
-ENTRY(server__entry)
-
 MEMORY
 {
     server_code (rx) : ORIGIN = 0, LENGTH = 0x3000
@@ -21,4 +19,13 @@ SECTIONS
     .bss : {
         *(.bss)
     }
+
+    /DISCARD/ : {
+        *(.interp)
+        *(.dynsym)
+        *(.dynstr)
+        *(.hash)
+        *(.gnu.hash)
+        *(.header)
+    } : phdr
 }
