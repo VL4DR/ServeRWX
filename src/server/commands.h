@@ -9,6 +9,8 @@ enum server_opcode
     SERVER_OPCODE_READ,
     SERVER_OPCODE_WRITE,
     SERVER_OPCODE_CALL,
+    SERVER_OPCODE_TRANSFER_INITIATE,
+    SERVER_OPCODE_TRANSFER_DATA,
     SERVER_OPCODE_EXECUTE,
     SERVER_OPCODE_CUSTOM,
 };
@@ -34,6 +36,17 @@ struct call_request
     value_t arg4;
 };
 
+struct transfer_initiate_request
+{
+    uint32_t shellcode_size;
+};
+
+struct transfer_data_request
+{
+    uint32_t offset;
+    uint8_t data[1];
+};
+
 struct read_response
 {
     uint8_t data[1];
@@ -50,6 +63,8 @@ union request_data
     struct read_request as_read_request;
     struct write_request as_write_request;
     struct call_request as_call_request;
+    struct transfer_initiate_request as_transfer_initiate_request;
+    struct transfer_data_request as_transfer_data_request;
 };
 
 union response_data

@@ -5,6 +5,25 @@
 #include "utils/utils.h"
 #include "server_internals.h"
 
+static server_context g_server_context;
+
+static enum server_status handle_transfer_initiate_request(IN struct server_request *request, OUT struct server_response *response)
+{
+    enum server_status status = SERVER_UNKNOWN;
+    uint32_t length = request->header.length;
+
+    if (length != sizeof(request->data.as_transfer_initiate_request)) {
+        DEBUG_LOG("Length parameter (%08x) in header is incorrect!\n", length);
+        status = SERVER_INVALID_PARAMETER;
+        goto cleanup;
+    }
+
+    
+    status = SERVER_SUCCESS;
+cleanup:
+    return status;
+}
+
 static enum server_status handle_read_request(IN struct server_request *request, OUT struct server_response *response)
 {
     enum server_status status = SERVER_UNKNOWN;
