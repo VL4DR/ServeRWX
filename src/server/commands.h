@@ -6,6 +6,7 @@
 enum server_opcode
 {
     SERVER_OPCODE_NOP = 0,
+    SERVER_OPCODE_RESET_STATE,
     SERVER_OPCODE_READ,
     SERVER_OPCODE_WRITE,
     SERVER_OPCODE_CALL,
@@ -57,6 +58,11 @@ struct call_response
     value_t return_value;
 };
 
+struct execute_response
+{
+    value_t return_value;
+}
+
 union request_data
 {
     uint8_t as_bytes[SERVER_MAX_DATA_SIZE]; 
@@ -72,4 +78,5 @@ union response_data
     uint8_t as_bytes[SERVER_MAX_DATA_SIZE];
     struct read_response as_read_response;
     struct call_response as_call_response;
+    struct execute_response as_execute_response;
 };

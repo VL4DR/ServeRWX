@@ -5,5 +5,13 @@
 #define SERVER_MAX_DATA_SIZE            (@SERVER_MAX_DATA_SIZE@)
 #define SERVER_MAGIC                    (@SERVER_MAGIC@)
 
+#ifndef ALLOCATE_SHELLCODE_BUFFER
+#define SERVER_SHELLCODE_BUFFER_SIZE    (@SERVER_SHELLCODE_BUFFER_SIZE@) 
+#endif
+
 extern void *server__extract_request_from_context(IN const struct register_context *context);
 extern void server__send_response(IN OUT struct register_context *context, IN void *response_data, IN uint32_t response_size);
+#ifdef ALLOCATE_SHELLCODE_BUFFER
+extern void *utils__allocate_memory(IN uint32_t size);
+extern void utils__free_memory(IN void *ptr);
+#endif
