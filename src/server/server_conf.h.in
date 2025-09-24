@@ -9,8 +9,18 @@
 #define SERVER_SHELLCODE_BUFFER_SIZE    (@SERVER_SHELLCODE_BUFFER_SIZE@) 
 #endif
 
-extern void *server__extract_request_from_context(IN const struct register_context *context);
-extern void server__send_response(IN OUT struct register_context *context, IN void *response_data, IN uint32_t response_size);
+#ifdef ADDRESS_64
+typedef uint64_t address_t;
+#else /* ADDRESS_64 */
+typedef uint32_t address_t;
+#endif /* !ADDRESS_64 */
+
+#ifdef VALUE_64
+typedef uint64_t value_t;
+#else /* VALUE_64 */
+typedef uint32_t value_t;
+#endif /* !VALUE_64 */
+
 #ifdef ALLOCATE_SHELLCODE_BUFFER
 extern void *utils__allocate_memory(IN uint32_t size);
 extern void utils__free_memory(IN void *ptr);

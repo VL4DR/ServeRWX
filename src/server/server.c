@@ -1,8 +1,9 @@
 #include "server/common/common.h"
 #include "server/common/debug.h"
 #include "server/common/error.h"
-#include "server/arch_defs.h"
-#include "utils/utils.h"
+#include "server/core/commands.h"
+#include "server/utils/utils.h"
+#include "server/server_conf.h"
 #include "server_internals.h"
 
 static struct server_context g_server_context;
@@ -276,7 +277,7 @@ static void initialize_response(IN struct server_request *request, OUT struct se
     response->header.status = SERVER_UNKNOWN;
 }
 
-static void handle_server_request(IN struct server_request *request, OUT struct server_response *response)
+void server__handle_request(IN struct server_request *request, OUT struct server_response *response)
 {
     enum server_status status = SERVER_UNKNOWN;
     uint32_t magic = request->header.magic;
@@ -292,21 +293,4 @@ static void handle_server_request(IN struct server_request *request, OUT struct 
     }
 
     response->header.status = status;
-}
-
-void SERVER_ENTRY_ABI server__entry(IN OUT struct register_context *context)
-{
-    void *input_request = NULL;
-    struct server_response response;
-    uint32_t response_size = 0;
-
-    utils__memset(&response, 0, sizeof(response));
-
-    input_request = server__extract_request_from_context(context);
-
-    if (NULL != input_request) {
-        handle_server_request((struct server_request *)input_request, &response);
-        response_size = sizeof(response.header) + response.header.length;
-        server__send_response(context, &response, response_size);
-    }
 }
