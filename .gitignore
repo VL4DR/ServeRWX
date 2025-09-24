@@ -2,5 +2,4 @@ build/*
 *.o
 *.bin
 .vscode/*
-include/server/server_exports.h
-include/server/arch_defs.h
+include/server/server_conf.h

@@ -3,6 +3,7 @@
 #include "server/common/common.h"
 #include "server/server_conf.h"
 
+
 enum server_opcode
 {
     SERVER_OPCODE_NOP = 0,

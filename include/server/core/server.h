@@ -9,6 +9,9 @@ struct request_header
     uint32_t magic;
     uint32_t opcode;
     uint32_t length;
+    uint32_t subcommand;
+    uint32_t integrity;
+    uint32_t reserved;
 };
 
 struct response_header
@@ -17,6 +20,8 @@ struct response_header
     uint32_t opcode;
     uint32_t length;
     uint32_t status;
+    uint32_t integrity;
+    uint32_t reserved;
 };
 
 struct server_request
