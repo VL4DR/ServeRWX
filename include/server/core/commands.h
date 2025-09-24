@@ -1,7 +1,7 @@
 #pragma once
 
 #include "server/common/common.h"
-#include "server/server_exports.h"
+#include "server/server_conf.h"
 
 enum server_opcode
 {
@@ -61,7 +61,7 @@ struct call_response
 struct execute_response
 {
     value_t return_value;
-}
+};
 
 union request_data
 {

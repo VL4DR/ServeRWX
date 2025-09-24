@@ -3,7 +3,10 @@
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR arm)
 
-option(THUMB    "Indicates whether to generate Thumb-2 code"    OFF)
+set(TOOLCHAIN_PATH /usr)
+
+
+option(THUMB    "Indicates whether to generate Thumb-2 code"    ON)
 
 set(SUPPORTED_ARCH_LIST         "armv4t;armv5t;armv6;armv6t2;armv6-m;armv7-m;armv7-a;armv7-r")
 set(THUMB2_SUPPORT_ARCH_LIST    "armv6t2;armv6-m;armv7-m;armv7-a;armv7-r")
@@ -46,9 +49,9 @@ endif ()
 set(TOOLCHAIN_BIN_DIR "${TOOLCHAIN_PATH}/bin")
 
 # Compilers
-set(CMAKE_C_COMPILER   "${TOOLCHAIN_BIN_DIR}/arm-none-eabi-gcc.exe")
-set(CMAKE_ASM_COMPILER "${TOOLCHAIN_BIN_DIR}/arm-none-eabi-gcc.exe" CACHE STRING "")
-set(CMAKE_OBJCOPY      "${TOOLCHAIN_BIN_DIR}/arm-none-eabi-objcopy.exe" CACHE STRING "")
+set(CMAKE_C_COMPILER   "${TOOLCHAIN_BIN_DIR}/arm-none-eabi-gcc")
+set(CMAKE_ASM_COMPILER "${TOOLCHAIN_BIN_DIR}/arm-none-eabi-gcc" CACHE STRING "")
+set(CMAKE_OBJCOPY      "${TOOLCHAIN_BIN_DIR}/arm-none-eabi-objcopy" CACHE STRING "")
 
 # Compiler flags
 set(CMAKE_C_FLAGS_INIT "-march=${ARCH} ${THUMB_COMPILE_FLAG} -Os -fPIC -m${ENDIANESS}-endian -nostdlib -ffreestanding -fno-stack-protector -Wall ${ADDITIONAL_C_FLAGS}")
@@ -67,4 +70,5 @@ set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
-list(APPEND CMAKE_TRY_COMPILE_PLATFORM_VARIABLES ${TOOLCHAIN_PATH})
+#list(APPEND CMAKE_TRY_COMPILE_PLATFORM_VARIABLES ${TOOLCHAIN_PATH})
+#list(APPEND CMAKE_TRY_COMPILE_PLATFORM_VARIABLES ${CMAKE_C_COMPILER})

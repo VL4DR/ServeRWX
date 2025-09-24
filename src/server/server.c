@@ -1,6 +1,7 @@
 #include "server/common/common.h"
 #include "server/common/debug.h"
 #include "server/common/error.h"
+#include "server/core/server.h"
 #include "server/core/commands.h"
 #include "server/utils/utils.h"
 #include "server/server_conf.h"
@@ -26,7 +27,7 @@ static enum server_status handle_reset_state_request(IN struct server_request *r
     g_server_context.shellcode_size = 0;
 
     status = SERVER_SUCCESS;
-cleanup:
+
     return status;
 }
 
