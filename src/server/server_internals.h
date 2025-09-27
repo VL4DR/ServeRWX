@@ -3,8 +3,8 @@
 #include "server/common/common.h"
 #include "server/server_conf.h"
 
-typedef value_t (*function_t)(value_t arg1, value_t arg2, value_t arg3, value_t arg4);
-typedef value_t (*shellcode_t)(void);
+typedef uint64_t (*function_t)(value_t arg1, value_t arg2, value_t arg3, value_t arg4);
+typedef uint64_t (*shellcode_t)(void);
 
 enum server_transfer_state
 {

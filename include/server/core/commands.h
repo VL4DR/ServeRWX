@@ -19,23 +19,23 @@ enum server_opcode
 
 struct read_request
 {
-    address_t address;
+    uint64_t address;
     uint32_t size;
 };
 
 struct write_request
 {
-    address_t address;
+    uint64_t address;
     uint8_t data[1];
 };
 
 struct call_request
 {
-    address_t address;
-    value_t arg1;
-    value_t arg2;
-    value_t arg3;
-    value_t arg4;
+    uint64_t address;
+    uint64_t arg1;
+    uint64_t arg2;
+    uint64_t arg3;
+    uint64_t arg4;
 };
 
 struct transfer_initiate_request
@@ -56,12 +56,12 @@ struct read_response
 
 struct call_response
 {
-    value_t return_value;
+    uint64_t return_value;
 };
 
 struct execute_response
 {
-    value_t return_value;
+    uint64_t return_value;
 };
 
 union request_data

@@ -23,8 +23,15 @@ static enum server_status handle_read_request(IN struct server_request *request,
 
     read_size = request->data.as_read_request.size;
 
+    if ((0 == read_size) || (read_size > SERVER_MAX_DATA_SIZE)) {
+        DEBUG_LOG("Size of bytes too read (%08x) is invalid!\n", read_size);
+        status = SERVER_INVALID_PARAMETER;
+        goto cleanup;
+    }
+
     DEBUG_LOG("Reading %08x bytes from the requested address...\n", read_size);
     utils__memcpy(response->data.as_read_response.data, (void *)request->data.as_read_request.address, read_size);
+    response->header.length = read_size;
 
     status = SERVER_SUCCESS;
 cleanup:
@@ -59,7 +66,7 @@ static enum server_status handle_call_request(IN struct server_request *request,
     enum server_status status = SERVER_UNKNOWN;
     uint32_t length = request->header.length;
     function_t call_function = NULL;
-    value_t return_value = 0;
+    uint64_t return_value = 0;
 
     if (length != sizeof(request->data.as_call_request)) {
         DEBUG_LOG("Length parameter (%08x) in header is incorrect!\n", length);
@@ -75,12 +82,13 @@ static enum server_status handle_call_request(IN struct server_request *request,
         different calling conventions in the same binary, see if there's an easy
         way to have the user choose a calling convention here.
     */
-    return_value = call_function(request->data.as_call_request.arg1,
-                                request->data.as_call_request.arg2,
-                                request->data.as_call_request.arg3,
-                                request->data.as_call_request.arg4);
+    return_value = call_function((value_t)request->data.as_call_request.arg1,
+                                (value_t)request->data.as_call_request.arg2,
+                                (value_t)request->data.as_call_request.arg3,
+                                (value_t)request->data.as_call_request.arg4);
     
     response->data.as_call_response.return_value = return_value;
+    response->header.length = sizeof(response->data.as_call_response)
 
     status = SERVER_SUCCESS;
 cleanup:
@@ -221,7 +229,7 @@ static enum server_status handle_execute_request(IN struct server_request *reque
 #ifndef DROP_EXECUTE_SUPPORT
     enum server_status status = SERVER_UNKNOWN;
     shellcode_t shellcode_entry = NULL;
-    value_t return_value = 0;
+    uint64_t return_value = 0;
 
     if (TRANSFER_STATE_TRANSFERRING_DATA != g_server_context.transfer_state) {
         DEBUG_LOG("Data transfer has not been initiated yet!\n");
@@ -234,6 +242,7 @@ static enum server_status handle_execute_request(IN struct server_request *reque
     shellcode_entry = (shellcode_t)g_server_context.shellcode_buffer;
     return_value = shellcode_entry();
 
+    response->header.length = sizeof(response->data.as_execute_response)
     response->data.as_execute_response.return_value = return_value;
 
     status = SERVER_SUCCESS;
