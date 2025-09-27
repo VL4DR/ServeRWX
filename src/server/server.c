@@ -88,7 +88,7 @@ static enum server_status handle_call_request(IN struct server_request *request,
                                 (value_t)request->data.as_call_request.arg4);
     
     response->data.as_call_response.return_value = return_value;
-    response->header.length = sizeof(response->data.as_call_response)
+    response->header.length = sizeof(response->data.as_call_response);
 
     status = SERVER_SUCCESS;
 cleanup:
@@ -237,12 +237,12 @@ static enum server_status handle_execute_request(IN struct server_request *reque
         goto cleanup;
     }
 
-    arch__clear_cache_range((address_t)g_server_context.shellcode_buffer, g_server_context.shellcode_size);
+    arch__clear_cache_range(g_server_context.shellcode_buffer, g_server_context.shellcode_size);
 
     shellcode_entry = (shellcode_t)g_server_context.shellcode_buffer;
     return_value = shellcode_entry();
 
-    response->header.length = sizeof(response->data.as_execute_response)
+    response->header.length = sizeof(response->data.as_execute_response);
     response->data.as_execute_response.return_value = return_value;
 
     status = SERVER_SUCCESS;

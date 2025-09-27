@@ -5,7 +5,7 @@ from communication import Communication
 
 class TestCommunication(Communication):
     def __init__(self, emu, tx_base_address, tx_buffer_size, rx_base_address, rx_buffer_size):
-        super().__init__()
+        super(TestCommunication).__init__()
         self._emu = emu
         self._tx_base_address = tx_base_address
         self._tx_buffer_size = tx_buffer_size

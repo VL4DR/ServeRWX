@@ -9,23 +9,11 @@
 #define SERVER_SHELLCODE_BUFFER_SIZE    (@SERVER_SHELLCODE_BUFFER_SIZE@) 
 #endif
 
-#ifdef ADDRESS_64
-typedef uint64_t address_t;
-#else /* ADDRESS_64 */
-typedef uint32_t address_t;
-#endif /* !ADDRESS_64 */
-
-#ifdef VALUE_64
-typedef uint64_t value_t;
-#else /* VALUE_64 */
-typedef uint32_t value_t;
-#endif /* !VALUE_64 */
-
 #ifdef ALLOCATE_SHELLCODE_BUFFER
 extern void *utils__allocate_memory(IN uint32_t size);
 extern void utils__free_memory(IN void *ptr);
 #endif /* ALLOCATE_SHELLCODE_BUFFER */
 
 #ifndef DROP_EXECUTE_SUPPORT
-extern void arch__clear_cache_range(IN address_t base_address, IN uint32_t size);
+extern void arch__clear_cache_range(IN void *base_address, IN uint32_t size);
 #endif /* !DROP_EXECUTE_SUPPORT */

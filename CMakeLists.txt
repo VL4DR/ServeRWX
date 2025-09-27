@@ -25,3 +25,5 @@ target_include_directories(server_core
     PUBLIC include
     PRIVATE src
 )
+
+add_subdirectory(tests)

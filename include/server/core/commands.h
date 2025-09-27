@@ -3,7 +3,7 @@
 #include "server/common/common.h"
 #include "server/server_conf.h"
 
-
+#pragma pack(push, 1)
 enum server_opcode
 {
     SERVER_OPCODE_NOP = 0,
@@ -81,3 +81,4 @@ union response_data
     struct call_response as_call_response;
     struct execute_response as_execute_response;
 };
+#pragma pack(pop)

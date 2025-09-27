@@ -3,8 +3,10 @@ import communication
 
 class ClientInterface:
 
-    def __init__(self, communication_interface : communication.Communication, **configuration):
+    def __init__(self, communication_interface : communication.Communication, cmd_callback=None, cmd_callback_arg=None, **configuration):
         self._communication_interface = communication_interface
+        self._cmd_callback = cmd_callback
+        self._cmd_callback_arg = cmd_callback_arg
         self._process_configuration(**configuration)
         
     
@@ -43,6 +45,8 @@ class ClientInterface:
         read_request = self._build_server_request(server_defs.ServerOpcode.SERVER_OPCODE_READ.value, read_request_data)
         self._communication_interface.send(read_request)
         
+        if self._cmd_callback:
+            self._cmd_callback(self._cmd_callback_arg)
         return self._extract_server_response_data()
 
 
@@ -51,7 +55,9 @@ class ClientInterface:
         write_request = self._build_server_request(server_defs.ServerOpcode.SERVER_OPCODE_WRITE.value, write_request_data)
         self._communication_interface.send(write_request)
 
-        status, _ = self._extract_server_response_data
+        if self._cmd_callback:
+            self._cmd_callback(self._cmd_callback_arg)
+        status, _ = self._extract_server_response_data()
         return status
 
     def call_function(self, address, arg1=0, arg2=0, arg3=0, arg4=0):
@@ -59,4 +65,6 @@ class ClientInterface:
         call_request = self._build_server_request(server_defs.ServerOpcode.SERVER_OPCODE_CALL.value, call_request_data)
         self._communication_interface.send(call_request)
 
+        if self._cmd_callback:
+            self._cmd_callback(self._cmd_callback_arg)
         return self._extract_server_response_data()
