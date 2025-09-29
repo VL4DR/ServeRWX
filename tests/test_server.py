@@ -9,9 +9,10 @@ import emulation_tester as et
 @pytest.fixture(scope='session')
 def tester(pytestconfig):
     server_binary_path = pytestconfig.getoption("server_binary_path")
-    if server_binary_path is None:
+    arch = pytestconfig.getoption('arch')
+    if (server_binary_path is None) or (arch is None):
         pytest.skip()
-    return et.EmulationTester(server_binary_path)
+    return et.EmulationTester(server_binary_path, arch)
 
 def test_read_sanity(tester : et.EmulationTester):
     status, response_data_bytes = tester.client_read_memory(et.DATA_SECTION_BASE, et.SERVER_MAX_DATA_SIZE)
@@ -57,10 +58,10 @@ def test_write_zero_length(tester : et.EmulationTester):
 
 
 def test_call_sanity(tester : et.EmulationTester):
-    func_bytes = tester.code_assemble("add rdi, rsi; add rdi, rdx; add rdi, rcx; mov rax, rdi; ret")
+    func_bytes = tester.assemble_call_func_asm()
     tester.emulator_write_memory(et.FUNCTION_CALL_CODE_SECTION_BASE, func_bytes)
-    status, response_data_bytes = tester.client_call_function(et.FUNCTION_CALL_CODE_SECTION_BASE, 0x1000, 0x1500, 0x2000, 0x3000)
+    status, response_data_bytes = tester.client_call_function(tester.transform_address(et.FUNCTION_CALL_CODE_SECTION_BASE), 0x1000, 0x1500, 0x2000, 0x3000)
 
     assert status == ServerStatus.SERVER_SUCCESS.value
     assert len(response_data_bytes) == 8
-    assert int.from_bytes(response_data_bytes, 'little') == 0x7500
+    assert (int.from_bytes(response_data_bytes, 'little') & tester.get_call_return_value_mask()) == 0x7500
