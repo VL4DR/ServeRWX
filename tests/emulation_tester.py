@@ -6,13 +6,13 @@ import dataclasses
 import collections.abc
 import unicorn as uc
 import keystone as ks
-from server_defs import ServerWriteRequest, ServerStatus
+import server_defs
 from client_interface import ClientInterface
 from test_communication import TestCommunication
 
 # Memory region for the server binary including bss
 CODE_SECTION_BASE = 0x40000000
-CODE_SECTION_LENGTH = 0x1000
+CODE_SECTION_LENGTH = 0x2000
 
 # Memory region for a small piece of code that calls the server logic
 SERVER_CALL_CODE_SECTION_BASE = 0x41000000
@@ -40,7 +40,7 @@ STACK_SECTION_LENGTH = 0x1000
 
 SERVER_MAX_DATA_SIZE = 0x100
 SERVER_MAX_READ_SIZE = SERVER_MAX_DATA_SIZE
-SERVER_MAX_WRITE_SIZE = SERVER_MAX_DATA_SIZE - ServerWriteRequest.sizeof()
+SERVER_MAX_WRITE_SIZE = SERVER_MAX_DATA_SIZE - server_defs.ServerWriteRequest.sizeof()
 
 
 MEMORY_MAPPINGS = [(CODE_SECTION_BASE, CODE_SECTION_LENGTH),
@@ -146,7 +146,7 @@ class EmulationTester:
         self._arch_defs.emu.emu_start(self.transform_address(SERVER_CALL_CODE_SECTION_BASE), SERVER_CALL_CODE_SECTION_BASE + len(jump_to_server))
 
 
-    def _code_assemble(self, code_str : str, base_address : int = 0):
+    def _code_assemble(self, code_str : str, base_address : int = 0) -> bytes:
         return self._arch_defs.kstone.asm(code_str, base_address, as_bytes=True)[0] 
 
 
@@ -162,12 +162,42 @@ class EmulationTester:
         return self._client.call_function(address, arg1, arg2, arg3, arg4)
     
 
+    def client_initiate_data_transfer(self, shellcode_size : int) -> int:
+        return self._client.initiate_data_transfer(shellcode_size)
+    
+
+    def client_transfer_data(self, offset : int, data : bytes) -> int:
+        return self._client.transfer_data(offset, data)
+    
+
+    def client_call_shellcode(self):
+        return self._client.call_shellcode()
+    
+
+    def client_reset_state(self):
+        return self._client.reset_state()
+    
+
+    def client_execute_shellcode_binary(self, shellcode_binary : bytes):
+        return self._client.execute_shellcode_binary(shellcode_binary)
+    
+
     def emulator_read_memory(self, address : int, size : int) -> bytes:
         return self._arch_defs.emu.mem_read(address, size)
 
 
     def emulator_write_memory(self, address : int, data : bytes) -> None:
         self._arch_defs.emu.mem_write(address, data)
+
+
+    def send_receive_raw_request(self, magic : int, opcode : int, length : int, integrity : int = 0, data : bytes = b'') -> bytes:
+        request_header = server_defs.ServerRequestHeader.build(dict(magic=magic, opcode=opcode, length=length, subcommand=0, integrity=integrity))
+        total_data = b''.join([request_header, data])
+        raw_response = self._client.send_receive_raw(total_data)
+        raw_response_header = server_defs.ServerResponseHeader.parse(raw_response)
+        raw_response_header_length = server_defs.ServerResponseHeader.sizeof()
+
+        return raw_response_header, raw_response[raw_response_header_length : ]
 
 
     def assemble_call_func_asm(self) -> bytes:

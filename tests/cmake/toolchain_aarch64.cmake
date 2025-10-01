@@ -1,13 +1,13 @@
-# Toolchain file for ARM bare-metal (gcc-arm-none-eabi)
+# Toolchain file for ARM bare-metal (gcc-aarch64-none-elf)
 
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR aarch64)
 
-set(SUPPORTED_ARCH_LIST         "armv8-a;armv8-r;armv9-a;")
+set(SUPPORTED_ARCH_LIST         "armv8-a;armv8-r;armv9-a")
 
 # User must set TOOLCHAIN_PATH when configuring CMake
 if (NOT DEFINED TOOLCHAIN_PATH)
-    message(FATAL_ERROR "Please set -DTOOLCHAIN_PATH=/path/to/gcc-arm-none-eabi")
+    message(FATAL_ERROR "Please set -DTOOLCHAIN_PATH=/path/to/gcc-aarch64-none-elf")
 endif ()
 
 if (NOT DEFINED ARCH)

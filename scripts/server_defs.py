@@ -6,7 +6,7 @@ DEFAULT_MAX_SERVER_DATA_SIZE = 0x100
 DEFAULT_SHELLCODE_BUFFER_SIZE = 0x1000
 
 class ServerOpcode(Enum):
-    SERVER_OPCODE_NOP = 0,
+    SERVER_OPCODE_NOP = 0
     SERVER_OPCODE_RESET_STATE = 1
     SERVER_OPCODE_READ = 2
     SERVER_OPCODE_WRITE = 3
@@ -62,4 +62,14 @@ ServerCallRequest = cs.Struct(
     "arg2" / cs.Int64ul,
     "arg3" / cs.Int64ul,
     "arg4" / cs.Int64ul
+)
+
+
+ServerTransferInitiateRequest = cs.Struct(
+    "shellcode_size" / cs.Int32ul
+)
+
+
+ServerTransferDataRequest = cs.Struct(
+    "offset" / cs.Int32ul
 )
