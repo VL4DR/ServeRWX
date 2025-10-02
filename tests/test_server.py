@@ -8,7 +8,6 @@ import emulation_tester as et
 
 @pytest.fixture(scope='session')
 def tester(pytestconfig):
-    print("FIXTURE CALLED!")
     server_binary_path = pytestconfig.getoption("server_binary_path")
     arch = pytestconfig.getoption('arch')
     tester = et.EmulationTester(server_binary_path, arch)
@@ -184,8 +183,11 @@ def test_shellcode_execute_sanity(tester : et.EmulationTester):
     status = tester.client_reset_state()
     assert status == server_defs.ServerStatus.SERVER_SUCCESS.value
     
-    func_bytes = b"\x00\x00\x00\x00" * 200 + b"\x00\x00\x9f\xe5\x1e\xff\x2f\xe1\xef\xbe\xad\xde"
-    status, response_data_bytes = tester.client_execute_shellcode_binary(func_bytes)
+    shellcode_func_bytes = tester.assemble_shellcode_func_asm()
+    status, response_data_bytes = tester.client_execute_shellcode_binary(shellcode_func_bytes)
+
+    expected_return_value = 0xAABBCCDDCAFEBABE
 
     assert status == server_defs.ServerStatus.SERVER_SUCCESS.value
-    assert (int.from_bytes(response_data_bytes, 'little') & tester.get_call_return_value_mask()) == 0xDEADBEEF
+    assert (int.from_bytes(response_data_bytes, 'little') & tester.get_call_return_value_mask())\
+    == (expected_return_value & tester.get_call_return_value_mask())

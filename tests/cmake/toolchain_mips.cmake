@@ -25,17 +25,17 @@ set(CMAKE_ASM_COMPILER "${TOOLCHAIN_BIN_DIR}/mips-linux-gnu-gcc")
 set(CMAKE_OBJCOPY      "${TOOLCHAIN_BIN_DIR}/mips-linux-gnu-objcopy")
 
 # Compiler flags
-set(CMAKE_C_FLAGS_INIT "-march=${ARCH} -Os -fPIC -EL -nostdlib -ffreestanding -fno-stack-protector -Wall ${ADDITIONAL_C_FLAGS}")
+set(CMAKE_C_FLAGS_INIT "-march=${ARCH} -EL -nostdlib -fno-pic -mno-abicalls -mno-plt -ffreestanding -fno-stack-protector -Wall ${ADDITIONAL_C_FLAGS}")
 set(CMAKE_ASM_FLAGS_INIT "-march=${ARCH} -EL")
 set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS_INIT})
 set(CMAKE_ASM_FLAGS ${CMAKE_ASM_FLAGS_INIT})
 
 # Bare-metal: no OS, minimal runtime
 set(CMAKE_EXE_LINKER_FLAGS_INIT "-Wl,--build-id=none ${ADDITIONAL_LINKER_FLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS  ${CMAKE_EXE_LINKER_FLAGS_INIT} CACHE STRING "Linker flags")
+set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS_INIT}")
 
 # Search only inside toolchain for headers/libs
-set(CMAKE_FIND_ROOT_PATH "${TOOLCHAIN_PATH}")
+set(CMAKE_FIND_ROOT_PATH "${TOOLCHAIN_PATH}/mips-linux-gnu")
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)

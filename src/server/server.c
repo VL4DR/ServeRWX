@@ -14,6 +14,7 @@ static enum server_status handle_read_request(IN struct server_request *request,
     enum server_status status = SERVER_UNKNOWN;
     uint32_t length = request->header.length;
     uint32_t read_size = 0;
+    uintptr_t cmd_address_value = 0;
 
     if (length != sizeof(request->data.as_read_request)) {
         DEBUG_LOG("Length parameter (%08x) in header is incorrect!\n", length);
@@ -30,7 +31,8 @@ static enum server_status handle_read_request(IN struct server_request *request,
     }
 
     DEBUG_LOG("Reading %08x bytes from the requested address...\n", read_size);
-    utils__memcpy(response->data.as_read_response.data, (void *)request->data.as_read_request.address, read_size);
+    cmd_address_value = (uintptr_t)request->data.as_read_request.address;
+    utils__memcpy(response->data.as_read_response.data, (void *)cmd_address_value, read_size);
     response->header.length = read_size;
 
     status = SERVER_SUCCESS;
@@ -43,6 +45,7 @@ static enum server_status handle_write_request(IN struct server_request *request
     enum server_status status = SERVER_UNKNOWN;
     uint32_t copy_length = 0;
     uint32_t length = request->header.length;
+    uintptr_t cmd_address_value = 0;
 
     if ((length < sizeof(request->data.as_write_request)) ||
         (length > SERVER_MAX_DATA_SIZE)) {
@@ -54,7 +57,8 @@ static enum server_status handle_write_request(IN struct server_request *request
     copy_length = request->header.length - offsetof(struct write_request, data);
 
     DEBUG_LOG("Writing %08x bytes to the requested address...\n", copy_length);
-    utils__memcpy((void *)request->data.as_write_request.address, request->data.as_write_request.data, copy_length);
+    cmd_address_value = request->data.as_write_request.address;
+    utils__memcpy((void *)cmd_address_value, request->data.as_write_request.data, copy_length);
 
     status = SERVER_SUCCESS;
 cleanup:
@@ -65,6 +69,7 @@ static enum server_status handle_call_request(IN struct server_request *request,
 {
     enum server_status status = SERVER_UNKNOWN;
     uint32_t length = request->header.length;
+    uintptr_t cmd_function_value = 0;
     function_t call_function = NULL;
     uint64_t return_value = 0;
 
@@ -75,7 +80,8 @@ static enum server_status handle_call_request(IN struct server_request *request,
     }
 
     DEBUG_LOG("Executing function!\n");
-    call_function = (function_t)request->data.as_call_request.address;
+    cmd_function_value = (uintptr_t)request->data.as_call_request.address;
+    call_function = (function_t)cmd_function_value;
 
     /* @todo this function call's calling convention is the same as the chosen
         calling convention for the server, but there may be several functions with

@@ -60,6 +60,7 @@ class ArchSpecificDefs:
     add_4_params_function_str : str
     call_return_value_mask : int
     address_transform_func : collections.abc.Callable[[int], int]
+    test_shellcode_str : str
 
 def addr_to_thumb(address):
     return address | 1
@@ -72,7 +73,8 @@ ARCH_TO_ARCH_OBJECT_MAPPING = {
         f"MOVW R12, #0; MOVT R12, {(CODE_SECTION_BASE >> 16) & 0xFFFF}; BLX R12",
         "ADD R0, R0, R1; ADD R0, R0, R2; ADD R0, R0, R3; BX LR",
         0xFFFFFFFF,
-        None),
+        None,
+        "LDR R0, =0xCAFEBABE; BX LR"),
     'arm_thumb' : ArchSpecificDefs(
         uc.Uc(uc.UC_ARCH_ARM, uc.UC_MODE_THUMB),
         ks.Ks(ks.KS_ARCH_ARM, ks.KS_MODE_THUMB),
@@ -80,7 +82,8 @@ ARCH_TO_ARCH_OBJECT_MAPPING = {
         f"MOVW R12, {(CODE_SECTION_BASE & 0xFFFF) | 1}; MOVT R12, {(CODE_SECTION_BASE >> 16) & 0xFFFF}; BLX R12",
         "ADD R0, R1; ADD R0, R2; ADD R0, R3; BX LR",
         0xFFFFFFFF,
-        addr_to_thumb),
+        addr_to_thumb,
+        "LDR R0, =0xCAFEBABE; BX LR"),
     'aarch64' : ArchSpecificDefs(
         uc.Uc(uc.UC_ARCH_ARM64, uc.UC_MODE_ARM),
         ks.Ks(ks.KS_ARCH_ARM64, 0),
@@ -88,7 +91,8 @@ ARCH_TO_ARCH_OBJECT_MAPPING = {
         f"LDR X5, ={CODE_SECTION_BASE}; BLR X5",
         "ADD X0, X0, X1; ADD X0, X0, X2; ADD X0, X0, X3; RET",
         0xFFFFFFFFFFFFFFFF,
-        None),
+        None,
+        "LDR X0, =0xAABBCCDDCAFEBABE; RET"),
     'x86' : ArchSpecificDefs(
         uc.Uc(uc.UC_ARCH_X86, uc.UC_MODE_32),
         ks.Ks(ks.KS_ARCH_X86, ks.KS_MODE_32),
@@ -96,7 +100,8 @@ ARCH_TO_ARCH_OBJECT_MAPPING = {
         f"call {CODE_SECTION_BASE}",
         "mov eax, [esp + 4]; add eax, [esp + 8]; add eax, [esp + 12]; add eax, [esp + 16]; ret",
         0xFFFFFFFF,
-        None),
+        None,
+        "mov eax, 0xCAFEBABE; ret"),
     'x86_64' : ArchSpecificDefs(
         uc.Uc(uc.UC_ARCH_X86, uc.UC_MODE_64),
         ks.Ks(ks.KS_ARCH_X86, ks.KS_MODE_64),
@@ -104,15 +109,17 @@ ARCH_TO_ARCH_OBJECT_MAPPING = {
         f"call {CODE_SECTION_BASE}",
         "add rdi, rsi; add rdi, rdx; add rdi, rcx; mov rax, rdi; ret",
         0xFFFFFFFFFFFFFFFF,
-        None),
+        None,
+        "mov rax, 0xAABBCCDDCAFEBABE; ret"),
     'mips' : ArchSpecificDefs(
         uc.Uc(uc.UC_ARCH_MIPS, uc.UC_MODE_MIPS32),
         ks.Ks(ks.KS_ARCH_MIPS, ks.KS_MODE_MIPS32),
         uc.mips_const.UC_MIPS_REG_SP,
-        f"lui $t0, {(CODE_SECTION_BASE >> 16) & 0xFFFF}; ori $t0, $t0, {CODE_SECTION_BASE & 0xFFFF}; jalr $t0",
+        f"lui $t9, {(CODE_SECTION_BASE >> 16) & 0xFFFF}; ori $t9, $t9, {CODE_SECTION_BASE & 0xFFFF}; jalr $t9; nop",
         "move $v0, $a0; add $v0, $v0, $a1; add $v0, $v0, $a2; add $v0, $v0, $a3; jr $ra",
         0xFFFFFFFF,
-        None)
+        None,
+        "lui $v0, 0xCAFE; ori $v0, $v0, 0xBABE; jr $ra")
 }
 
 
@@ -203,6 +210,10 @@ class EmulationTester:
     def assemble_call_func_asm(self) -> bytes:
         return self._code_assemble(self._arch_defs.add_4_params_function_str)
     
+
+    def assemble_shellcode_func_asm(self) -> bytes:
+        return self._code_assemble(self._arch_defs.test_shellcode_str)
+
 
     def get_call_return_value_mask(self) -> int:
         return self._arch_defs.call_return_value_mask

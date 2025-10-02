@@ -35,8 +35,10 @@ if (DROP_EXECUTE_SUPPORT)
     target_compile_definitions(server_core PRIVATE DROP_EXECUTE_SUPPORT)
     message(STATUS "Server is configured without shellcode execution logic")
 else ()
-    message(STATUS "Server is configured to include shellcode executing logic")
+    message(STATUS "Server is configured to include shellcode execution logic")
 endif ()
+
+message(STATUS "Path: ${CMAKE_FIND_ROOT_PATH}")
 
 target_include_directories(server_core 
     PUBLIC include
