@@ -1,6 +1,7 @@
 #pragma once
 
 #include "server/common/common.h"
+#include "server/common/error.h"
 #include "commands.h"
 
 #pragma pack(push, 1)
@@ -49,3 +50,7 @@ struct server_response
     the given request by the server.
 */
 void server__handle_request(IN struct server_request *request, OUT struct server_response *response);
+
+#ifdef HAVE_CUSTOM_COMMAND
+enum server_status server__handle_custom_command(IN struct server_request *request, OUT struct server_response *response);
+#endif /* HAVE_CUSTOM_COMMAND */

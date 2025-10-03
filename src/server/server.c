@@ -293,7 +293,11 @@ static enum server_status dispatch_request(IN struct server_request *request, OU
             status = handle_call_request(request, response);
             break;
         case SERVER_OPCODE_CUSTOM:
+#ifdef HAVE_CUSTOM_COMMAND
+            status = server__handle_custom_command(request, response);
+#else /* HAVE_CUSTOM_COMMAND */
             status = SERVER_UNIMPLEMENTED;
+#endif /* !HAVE_CUSTOM_COMMAND */
             break;
         default:
             DEBUG_LOG("Invalid opcode %08x!\n", (uint32_t)opcode);
@@ -315,6 +319,7 @@ void server__handle_request(IN struct server_request *request, OUT struct server
 {
     enum server_status status = SERVER_UNKNOWN;
     uint32_t magic = request->header.magic;
+    POSSIBLY_UNUSED_VARIABLE(g_server_context);
 
     initialize_response(request, response);
 

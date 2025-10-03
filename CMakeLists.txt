@@ -4,8 +4,9 @@ project(server
     C
 )
 
-option(ALLOCATE_SHELLCODE_BUFFER "Determines whether to allocate shellcode space using firmware's memory allocation routine" OFF)
+option(ALLOCATE_SHELLCODE_BUFFER "Determines whether to allocate shellcode space using user-specified memory allocation routine" OFF)
 option(HAVE_EXECUTE_SUPPORT "Determines whether to include logic of executing arbitrary shellcodes" ON)
+option(HAVE_CUSTOM_COMMAND "Determines whether theere's a custom server command implementation" OFF)
 
 set(SERVER_MAX_DATA_SIZE 0x100 CACHE STRING "The maximum data size for server requests and responses")
 set(SERVER_MAGIC 0xDEADBEEF CACHE STRING "The magic to be used for the server")
@@ -36,6 +37,13 @@ if (HAVE_EXECUTE_SUPPORT)
     message(STATUS "Server is configured to include shellcode execution logic")
 else ()
     message(STATUS "Server is configured without shellcode execution logic")
+endif ()
+
+if (HAVE_CUSTOM_COMMAND)
+    target_compile_definitions(server_core PRIVATE HAVE_CUSTOM_COMMAND)
+    message(STATUS "Server is configured to include the user's custom command implementation")
+else ()
+    message(STATUS "Server is configured to exclude the user's custom command implementation")
 endif ()
 
 target_include_directories(server_core 

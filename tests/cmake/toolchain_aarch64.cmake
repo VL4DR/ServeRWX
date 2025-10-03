@@ -20,9 +20,9 @@ message(STATUS "Using architecture ${ARCH}")
 set(TOOLCHAIN_BIN_DIR "${TOOLCHAIN_PATH}/bin")
 
 # Compilers
-set(CMAKE_C_COMPILER   "${TOOLCHAIN_BIN_DIR}/aarch64-none-elf-gcc.exe")
-set(CMAKE_ASM_COMPILER "${TOOLCHAIN_BIN_DIR}/aarch64-none-elf-gcc.exe")
-set(CMAKE_OBJCOPY      "${TOOLCHAIN_BIN_DIR}/aarch64-none-elf-objcopy.exe")
+set(CMAKE_C_COMPILER   "${TOOLCHAIN_BIN_DIR}/aarch64-none-elf-gcc")
+set(CMAKE_ASM_COMPILER "${TOOLCHAIN_BIN_DIR}/aarch64-none-elf-gcc")
+set(CMAKE_OBJCOPY      "${TOOLCHAIN_BIN_DIR}/aarch64-none-elf-objcopy")
 
 # Compiler flags
 set(CMAKE_C_FLAGS_INIT "-march=${ARCH} -Os -fPIC -mlittle-endian -nostdlib -ffreestanding -fno-stack-protector -Wall ${ADDITIONAL_C_FLAGS}")
