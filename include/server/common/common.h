@@ -8,4 +8,5 @@
 #define OUT
 #define OPTIONAL
 
+/* @todo maybe find a better typedef here. */
 typedef uint_fast32_t value_t;

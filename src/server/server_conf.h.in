@@ -2,18 +2,35 @@
 
 #include "server/common/common.h"
 
+/* The maximum size, in bytes, for the data portion of both the server request and server response. */
 #define SERVER_MAX_DATA_SIZE            (@SERVER_MAX_DATA_SIZE@)
+/* The magic value defined for server requests and responses. */
 #define SERVER_MAGIC                    (@SERVER_MAGIC@)
 
 #ifndef ALLOCATE_SHELLCODE_BUFFER
+/* The size, in bytes,  of the shellcode buffer that the server will consider to be valid when transferring shellcodes. */
 #define SERVER_SHELLCODE_BUFFER_SIZE    (@SERVER_SHELLCODE_BUFFER_SIZE@) 
 #endif
 
 #ifdef ALLOCATE_SHELLCODE_BUFFER
+/* Return a pointer to a contiguous memory range which can be used freely by the caller
+    until it is explicitly released.
+    @param size - the number, in bytes, of the requested memory region to be allocated for use.
+*/
 extern void *utils__allocate_memory(IN uint32_t size);
+
+/* Release a memory range which was previously returned from `utils__allocate_memory`. 
+    @param ptr - the pointer to the beginning of the memory range to release.
+*/
 extern void utils__free_memory(IN void *ptr);
 #endif /* ALLOCATE_SHELLCODE_BUFFER */
 
-#ifndef DROP_EXECUTE_SUPPORT
+#ifdef HAVE_EXECUTE_SUPPORT
+/* An architecture-specific routine which does all the necessary cache maintenance operations
+    so that a code block which has recently been written to the given memory range can be
+    successfully executed.
+    @param base_address - the start address of the memory block.
+    @param size - the size, in bytes, of the memory block.
+*/
 extern void arch__clear_cache_range(IN void *base_address, IN uint32_t size);
-#endif /* !DROP_EXECUTE_SUPPORT */
+#endif /* HAVE_EXECUTE_SUPPORT */

@@ -5,7 +5,7 @@ project(server
 )
 
 option(ALLOCATE_SHELLCODE_BUFFER "Determines whether to allocate shellcode space using firmware's memory allocation routine" OFF)
-option(DROP_EXECUTE_SUPPORT "Determines whether to eliminate server logic that supports executing arbitrary shellcodes" OFF)
+option(HAVE_EXECUTE_SUPPORT "Determines whether to include logic of executing arbitrary shellcodes" ON)
 
 set(SERVER_MAX_DATA_SIZE 0x100 CACHE STRING "The maximum data size for server requests and responses")
 set(SERVER_MAGIC 0xDEADBEEF CACHE STRING "The magic to be used for the server")
@@ -31,14 +31,12 @@ else ()
     message(STATUS "Server is configured to use bss space of size ${SERVER_SHELLCODE_BUFFER_SIZE} bytes")
 endif ()
 
-if (DROP_EXECUTE_SUPPORT)
-    target_compile_definitions(server_core PRIVATE DROP_EXECUTE_SUPPORT)
-    message(STATUS "Server is configured without shellcode execution logic")
-else ()
+if (HAVE_EXECUTE_SUPPORT)
+    target_compile_definitions(server_core PRIVATE HAVE_EXECUTE_SUPPORT)
     message(STATUS "Server is configured to include shellcode execution logic")
+else ()
+    message(STATUS "Server is configured without shellcode execution logic")
 endif ()
-
-message(STATUS "Path: ${CMAKE_FIND_ROOT_PATH}")
 
 target_include_directories(server_core 
     PUBLIC include

@@ -1,5 +1,6 @@
 #pragma once
 
+/* Possible server status codes that may be returned to the user. */
 enum server_status
 {
     SERVER_SUCCESS = 0,

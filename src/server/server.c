@@ -103,7 +103,7 @@ cleanup:
 
 static enum server_status handle_reset_state_request(IN struct server_request *request, OUT struct server_response *response)
 {
-#ifndef DROP_EXECUTE_SUPPORT
+#ifdef HAVE_EXECUTE_SUPPORT
     enum server_status status = SERVER_UNKNOWN;
 
 #ifdef ALLOCATE_SHELLCODE_BUFFER
@@ -122,14 +122,14 @@ static enum server_status handle_reset_state_request(IN struct server_request *r
     status = SERVER_SUCCESS;
 
     return status;
-#else /* !DROP_EXECUTE_SUPPORT */
+#else /* HAVE_EXECUTE_SUPPORT */
     return SERVER_UNIMPLEMENTED;
-#endif /* DROP_EXECUTE_SUPPORT */
+#endif /* !HAVE_EXECUTE_SUPPORT */
 }
 
 static enum server_status handle_transfer_initiate_request(IN struct server_request *request, OUT struct server_response *response)
 {
-#ifndef DROP_EXECUTE_SUPPORT
+#ifdef HAVE_EXECUTE_SUPPORT
     enum server_status status = SERVER_UNKNOWN;
     uint32_t length = request->header.length;
     uint32_t transfer_size = 0;
@@ -175,14 +175,14 @@ static enum server_status handle_transfer_initiate_request(IN struct server_requ
     status = SERVER_SUCCESS;
 cleanup:
     return status;
-#else /* !DROP_EXECUTE_SUPPORT */
+#else /* HAVE_EXECUTE_SUPPORT */
     return SERVER_UNIMPLEMENTED;
-#endif /* DROP_EXECUTE_SUPPORT */
+#endif /* !HAVE_EXECUTE_SUPPORT */
 }
 
 static enum server_status handle_transfer_data_request(IN struct server_request *request, OUT struct server_response *response)
 {
-#ifndef DROP_EXECUTE_SUPPORT
+#ifdef HAVE_EXECUTE_SUPPORT
     enum server_status status = SERVER_UNKNOWN;
     uint32_t length = request->header.length;
     uint32_t chunk_offset = 0;
@@ -225,14 +225,14 @@ static enum server_status handle_transfer_data_request(IN struct server_request 
     status = SERVER_SUCCESS;
 cleanup:
     return status;
-#else /* !DROP_EXECUTE_SUPPORT */
+#else /* HAVE_EXECUTE_SUPPORT */
     return SERVER_UNIMPLEMENTED;
-#endif /* DROP_EXECUTE_SUPPORT */
+#endif /* !HAVE_EXECUTE_SUPPORT */
 }
 
 static enum server_status handle_execute_request(IN struct server_request *request, OUT struct server_response *response)
 {
-#ifndef DROP_EXECUTE_SUPPORT
+#ifdef HAVE_EXECUTE_SUPPORT
     enum server_status status = SERVER_UNKNOWN;
     shellcode_t shellcode_entry = NULL;
     uint64_t return_value = 0;
@@ -254,9 +254,9 @@ static enum server_status handle_execute_request(IN struct server_request *reque
     status = SERVER_SUCCESS;
 cleanup:
     return status;
-#else /* !DROP_EXECUTE_SUPPORT */
+#else /* HAVE_EXECUTE_SUPPORT */
     return SERVER_UNIMPLEMENTED;
-#endif /* DROP_EXECUTE_SUPPORT */
+#endif /* !HAVE_EXECUTE_SUPPORT */
 }
 
 static enum server_status dispatch_request(IN struct server_request *request, OUT struct server_response *response)

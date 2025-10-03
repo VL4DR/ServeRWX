@@ -13,3 +13,4 @@ class Communication(ABC):
     @abstractmethod
     def receive(self, num_bytes : int):
         pass
+    
