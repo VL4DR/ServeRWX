@@ -4,6 +4,7 @@ project(server
     C
 )
 
+option(ENABLE_DEBUG "Determines whether to output the server's debug messages" OFF)
 option(ALLOCATE_SHELLCODE_BUFFER "Determines whether to allocate shellcode space using user-specified memory allocation routine" OFF)
 option(HAVE_EXECUTE_SUPPORT "Determines whether to include logic of executing arbitrary shellcodes" ON)
 option(HAVE_CUSTOM_COMMAND "Determines whether theere's a custom server command implementation" OFF)
@@ -24,6 +25,13 @@ set(SERVER_SOURCES
 add_library(server_core
     ${SERVER_SOURCES}
 )
+
+if (ENABLE_DEBUG)
+    target_compile_definitions(ENABLE_DEBUG)
+    message(STATUS "Server is configured in debug mode")
+else ()
+    message(STATUS "Server is configured in release mode")
+endif ()
 
 if (ALLOCATE_SHELLCODE_BUFFER)
     target_compile_definitions(server_core PRIVATE ALLOCATE_SHELLCODE_BUFFER)
