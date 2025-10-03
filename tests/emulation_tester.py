@@ -3,6 +3,7 @@ sys.path.insert(1, '../scripts')
 
 import random
 from typing import Tuple
+import construct as cs
 import server_defs
 from client_interface import ClientInterface
 from test_communication import TestCommunication
@@ -171,7 +172,7 @@ class EmulationTester:
                                  length : int,
                                  integrity : int = 0,
                                  data : bytes = b''
-                                 ) -> Tuple[server_defs.ServerResponseHeader, bytes]:
+                                 ) -> Tuple[cs.Struct, bytes]:
         """
         Send a raw request to the server and return the server's response.
         @param magic - the magic to encode within the request.
