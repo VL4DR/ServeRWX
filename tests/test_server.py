@@ -113,15 +113,17 @@ def test_call_sanity(tester : et.EmulationTester):
     Test that calling an arbitrary function works as expected.
     """
     func_bytes = tester.assemble_call_func_asm()
+    transformed_address = tester.transform_address(emu_test_defs.FUNCTION_CALL_CODE_SECTION_BASE)
     tester.emulator_write_memory(emu_test_defs.FUNCTION_CALL_CODE_SECTION_BASE, func_bytes)
-    status, response_data_bytes = tester.client_call_function(tester.transform_address(emu_test_defs.FUNCTION_CALL_CODE_SECTION_BASE),
+    status, response_data_bytes = tester.client_call_function(transformed_address,
                                                               0x1000,
                                                               0x1500,
                                                               0x2000,
                                                               0x3000)
     assert status == server_defs.ServerStatus.SERVER_SUCCESS.value
     assert len(response_data_bytes) == 8
-    assert (int.from_bytes(response_data_bytes, 'little') & tester.get_call_return_value_mask()) == 0x7500
+    assert (int.from_bytes(response_data_bytes, 'little') & tester.get_call_return_value_mask())\
+        == 0x7500
 
 
 def test_call_invalid_request_length(tester : et.EmulationTester):
@@ -143,10 +145,12 @@ def test_initiate_transfer_invalid_request_length(tester : et.EmulationTester):
     in the request header for initiating a shellcode transfer.
     """
     initiate_transfer_request_length = server_defs.ServerTransferInitiateRequest.sizeof()
+    data_to_send = b'\x01' * (initiate_transfer_request_length + 1)
+    initiate_transfer_opcode = server_defs.ServerOpcode.SERVER_OPCODE_TRANSFER_INITIATE.value
     response_header, _ = tester.send_receive_raw_request(server_defs.DEFAULT_MAGIC,
-                                                         server_defs.ServerOpcode.SERVER_OPCODE_TRANSFER_INITIATE.value,
+                                                         initiate_transfer_opcode,
                                                          initiate_transfer_request_length + 1,
-                                                         data=b'\x01' * (initiate_transfer_request_length + 1))
+                                                         data=data_to_send)
     assert response_header.status == server_defs.ServerStatus.SERVER_INVALID_PARAMETER.value
 
 
@@ -179,7 +183,7 @@ def test_data_transfer_chunk_overflow(tester : et.EmulationTester):
     memory allocated for the shellcode.
     """
     shellcode_size = emu_test_defs.SERVER_MAX_DATA_SIZE - 1
-    
+
     status = tester.client_initiate_data_transfer(shellcode_size)
     assert status == server_defs.ServerStatus.SERVER_SUCCESS.value
 
@@ -199,10 +203,11 @@ def test_data_transfer_before_initiate(tester : et.EmulationTester):
 
 def test_data_transfer_too_large_size(tester : et.EmulationTester):
     """
-    Test the expected server response when there's an attempt to transfer more chunk data than a single
-    request supports.
+    Test the expected server response when there's an attempt to transfer more chunk data
+    than a single request supports.
     """
-    max_chunk_size = emu_test_defs.SERVER_MAX_DATA_SIZE - server_defs.ServerTransferDataRequest.sizeof()
+    max_chunk_size = emu_test_defs.SERVER_MAX_DATA_SIZE -\
+        server_defs.ServerTransferDataRequest.sizeof()
     shellcode_size = 2 * max_chunk_size
     status = tester.client_initiate_data_transfer(shellcode_size)
     assert status == server_defs.ServerStatus.SERVER_SUCCESS.value

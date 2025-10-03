@@ -1,5 +1,8 @@
-import construct as cs
 from enum import Enum
+import construct as cs
+
+
+# All definitions in this file are the same as the ones in the server's *.h files.
 
 DEFAULT_MAGIC = 0xDEADBEEF
 DEFAULT_MAX_SERVER_DATA_SIZE = 0x100
