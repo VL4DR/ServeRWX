@@ -12,6 +12,11 @@ import server_defs
 # on multiple architectures.
 @dataclasses.dataclass
 class ArchSpecificDefs:
+    """
+    Per architecture, we define the set of elements that will be used to test the server.
+    This includes the infrastructure objects needed to emulate each architecture, references
+    to architecture-specific registers, etc.
+    """
     # The emulator object that will be used to emulate the server's functionality.
     emu : uc.Uc
     # The assembler object that will be used to assemble architecture-specific
@@ -31,11 +36,13 @@ class ArchSpecificDefs:
     call_return_value_mask : int
     # The conversion function that given an address, returns an address appropriate
     # for execution. Currently, this function is only applicable to ARM code running in Thumb mode,
-    # which requires the LSB bit of the address to be on before starting execution from that address.
+    # which requires the LSB bit of the address to be on before starting execution from that
+    # address.
     address_transform_func : collections.abc.Callable[[int], int]
     # The assembly code (not binary!) for a shellcode to be executed on the server. In this case,
-    # the function simply returns a magic value for 0xAABBCCDDCAFEBABE (or just the lower 32-bits of this
-    # magic, namely 0xCAFEBABE, for architectures that usually return a 32-bit value).
+    # the function simply returns a magic value for 0xAABBCCDDCAFEBABE (or just the lower
+    # 32-bits of this magic, namely 0xCAFEBABE, for architectures that usually return a 32-bit
+    # value).
     test_shellcode_str : str
 
 # Memory region for the server binary including bss
@@ -66,11 +73,7 @@ SERVER_RESPONSE_SIZE = 0x1000
 STACK_SECTION_BASE = 0x60000000
 STACK_SECTION_LENGTH = 0x1000
 
-SERVER_MAX_DATA_SIZE = server_defs.DEFAULT_MAX_SERVER_DATA_SIZE
-SERVER_MAX_READ_SIZE = SERVER_MAX_DATA_SIZE
-SERVER_MAX_WRITE_SIZE = server_defs.DEFAULT_MAX_SERVER_DATA_SIZE - server_defs.ServerWriteRequest.sizeof()
-
-
+# A list containing all memory regions to be mapped.
 MEMORY_MAPPINGS = [(CODE_SECTION_BASE, CODE_SECTION_LENGTH),
                    (SERVER_CALL_CODE_SECTION_BASE, SERVER_CALL_CODE_SECTION_LENGTH),
                    (FUNCTION_CALL_CODE_SECTION_BASE, FUNCTION_CALL_CODE_SECTION_LENGTH),

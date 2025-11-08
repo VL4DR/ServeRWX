@@ -5,6 +5,7 @@ import random
 from typing import Tuple
 import construct as cs
 import server_defs
+import configuration
 from client_interface import ClientInterface
 from test_communication import TestCommunication
 import emulation_tester_defs as emu_test_defs
@@ -15,7 +16,7 @@ class EmulationTester:
     A utility class implementing the necessary logic to invoke when testing the server
     using an emulator.
     """
-    def __init__(self, server_binary_path : str, arch : str):
+    def __init__(self, server_binary_path : str, server_config_path : str, arch : str):
         if not arch in emu_test_defs.ARCH_TO_ARCH_OBJECT_MAPPING:
             raise ValueError("Invalid architecture specified!")
 
@@ -30,7 +31,11 @@ class EmulationTester:
                                                emu_test_defs.SERVER_REQUEST_SIZE,
                                                emu_test_defs.SERVER_RESPONSE_BASE,
                                                emu_test_defs.SERVER_RESPONSE_SIZE)
-        self._client = ClientInterface(test_communication, self._call_server, self)
+        self._server_config = configuration.ServerConfig(server_config_path)
+        self._client = ClientInterface(test_communication,
+                                       self._server_config,
+                                       self._call_server,
+                                       self)
 
 
     def _initialize_emulator(self, server_binary : bytes) -> None:
@@ -56,6 +61,7 @@ class EmulationTester:
                                              emu_test_defs.SERVER_CALL_CODE_SECTION_BASE)
         self._arch_defs.emu.mem_write(emu_test_defs.SERVER_CALL_CODE_SECTION_BASE,
                                       jump_to_server)
+
         self._arch_defs.emu.emu_start(
             self.transform_address(emu_test_defs.SERVER_CALL_CODE_SECTION_BASE),
             emu_test_defs.SERVER_CALL_CODE_SECTION_BASE + len(jump_to_server))
@@ -66,6 +72,14 @@ class EmulationTester:
         Return the binary from of the given assembly code.
         """
         return self._arch_defs.assembler.asm(code_str, base_address, as_bytes=True)[0]
+
+
+    @property
+    def server_config_data(self):
+        """
+        Fetch the server configuration.
+        """
+        return self._server_config.server_config_data
 
 
     def client_read_memory(self, address : int, size : int) -> Tuple[int, bytes]:

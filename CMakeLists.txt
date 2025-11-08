@@ -9,6 +9,7 @@ option(ENABLE_DEBUG "Determines whether to output the server's debug messages" O
 option(ALLOCATE_SHELLCODE_BUFFER "Determines whether to allocate shellcode space using user-specified memory allocation routine" OFF)
 option(HAVE_EXECUTE_SUPPORT "Determines whether to include logic for executing arbitrary shellcodes" ON)
 option(HAVE_CUSTOM_COMMAND "Determines whether there's a custom server command implementation" OFF)
+option(SERVER_BIG_ENDIAN    "Determines whether the server code is big-endian based" OFF)
 
 set(SERVER_MAX_DATA_SIZE 0x100 CACHE STRING "The maximum data size for server requests and responses")
 set(SERVER_MAGIC 0xDEADBEEF CACHE STRING "The magic to be used for the server")
@@ -16,6 +17,10 @@ set(SERVER_SHELLCODE_BUFFER_SIZE 0x1000 CACHE STRING "The number of bytes that m
 
 configure_file(src/server/server_conf.h.in
     ${CMAKE_CURRENT_SOURCE_DIR}/include/server/server_conf.h
+)
+
+configure_file(config/config.yaml.in
+    ${CMAKE_CURRENT_BINARY_DIR}/config.yaml
 )
 
 set(SERVER_SOURCES  

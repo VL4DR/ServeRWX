@@ -1,6 +1,8 @@
 from typing import Tuple
+import configuration
 import server_defs
 import communication
+
 
 class ClientInterface:
     """
@@ -9,9 +11,11 @@ class ClientInterface:
 
     def __init__(self,
                  communication_interface : communication.Communication,
+                 server_config : configuration.ServerConfig,
                  cmd_callback=None,
                  cmd_callback_arg=None):
         self._communication_interface = communication_interface
+        self._server_config_data = server_config.server_config_data
         self._cmd_callback = cmd_callback
         self._cmd_callback_arg = cmd_callback_arg
 
@@ -21,7 +25,7 @@ class ClientInterface:
         Given an operation code and the data portion of a request, return the binary form
         of the entire request, filling in the appropriate metadata for the request.
         """
-        magic = server_defs.DEFAULT_MAGIC
+        magic = self._server_config_data.server_magic
         request_header = server_defs.ServerRequestHeader.build({"magic" : magic,
                                                                 "opcode" : opcode,
                                                                 "length" : len(request_data),
@@ -75,7 +79,8 @@ class ClientInterface:
         @param size - the number of bytes to read from the requested address.
         @return a tuple representing the status code and the response data for the given request.
         """
-        read_request_data = server_defs.ServerReadRequest.build(dict(address=address, size=size))
+        read_request_data = server_defs.ServerReadRequest.build({"address" : address,
+                                                                 "size" : size})
         read_request = self._build_server_request(server_defs.ServerOpcode.SERVER_OPCODE_READ.value,
                                                   read_request_data)
         self._communication_interface.send(read_request)
@@ -205,7 +210,7 @@ class ClientInterface:
             raise RuntimeError(f"Initiating shellcode transfer failed with error {status}!")
 
         transfer_data_request_size = server_defs.ServerTransferDataRequest.sizeof()
-        chunk_size = server_defs.DEFAULT_MAX_SERVER_DATA_SIZE - transfer_data_request_size
+        chunk_size = self._server_config_data.server_max_data_size - transfer_data_request_size
 
         for chunk_offset in range(0, shellcode_binary_len, chunk_size):
             chunk_end = min(shellcode_binary_len, chunk_offset + chunk_size)
