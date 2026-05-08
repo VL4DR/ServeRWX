@@ -25,7 +25,6 @@ extern void *utils__allocate_memory(IN uint32_t size);
 extern void utils__free_memory(IN void *ptr);
 #endif /* ALLOCATE_SHELLCODE_BUFFER */
 
-#ifdef HAVE_EXECUTE_SUPPORT
 /* An architecture-specific routine which does all the necessary cache maintenance operations
     so that a code block which has recently been written to the given memory range can be
     successfully executed.
@@ -33,4 +32,3 @@ extern void utils__free_memory(IN void *ptr);
     @param size - the size, in bytes, of the memory block.
 */
 extern void arch__clear_cache_range(IN void *base_address, IN uint32_t size);
-#endif /* HAVE_EXECUTE_SUPPORT */

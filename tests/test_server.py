@@ -160,8 +160,6 @@ def test_initiate_transfer_invalid_request_length(tester : et.EmulationTester):
     in the request header for initiating a shellcode transfer.
     """
     server_magic = tester.server_config_data.server_magic
-    if not tester.server_config_data.have_execute_support:
-        pytest.skip("Execute shellcode not implemented!")
 
     initiate_transfer_request_length = server_defs.ServerTransferInitiateRequest.sizeof()
     data_to_send = b'\x01' * (initiate_transfer_request_length + 1)
@@ -177,9 +175,6 @@ def test_initiate_transfer_zero_size(tester : et.EmulationTester):
     """
     Test the expected server response when a shellcode transfer of 0 bytes is requested.
     """
-    if not tester.server_config_data.have_execute_support:
-        pytest.skip("Execute shellcode not implemented!")
-
     status = tester.client_initiate_data_transfer(0)
     assert status == server_defs.ServerStatus.SERVER_INVALID_PARAMETER.value
 
@@ -190,8 +185,6 @@ def test_data_transfer_offset_beyond_bounds(tester : et.EmulationTester):
     at an offset which is beyond the end of the declared size for the shellcode.
     """
     shellcode_size = tester.server_config_data.server_max_data_size - 1
-    if not tester.server_config_data.have_execute_support:
-        pytest.skip("Execute shellcode not implemented!")
 
     status = tester.client_initiate_data_transfer(shellcode_size)
     assert status == server_defs.ServerStatus.SERVER_SUCCESS.value
@@ -207,8 +200,6 @@ def test_data_transfer_chunk_overflow(tester : et.EmulationTester):
     memory allocated for the shellcode.
     """
     shellcode_size = tester.server_config_data.server_max_data_size - 1
-    if not tester.server_config_data.have_execute_support:
-        pytest.skip("Execute shellcode not implemented!")
 
     status = tester.client_initiate_data_transfer(shellcode_size)
     assert status == server_defs.ServerStatus.SERVER_SUCCESS.value
@@ -224,8 +215,6 @@ def test_data_transfer_before_initiate(tester : et.EmulationTester):
     """
     server_max_data_size = tester.server_config_data.server_max_data_size
     chunk_size = server_max_data_size - server_defs.ServerTransferDataRequest.sizeof()
-    if not tester.server_config_data.have_execute_support:
-        pytest.skip("Execute shellcode not implemented!")
 
     status = tester.client_transfer_data(0, b"\x00" * chunk_size)
     assert status == server_defs.ServerStatus.SERVER_INVALID_STATE.value
@@ -239,8 +228,6 @@ def test_data_transfer_too_large_size(tester : et.EmulationTester):
     server_max_data_size = tester.server_config_data.server_max_data_size
     max_chunk_size = server_max_data_size - server_defs.ServerTransferDataRequest.sizeof()
     shellcode_size = 2 * max_chunk_size
-    if not tester.server_config_data.have_execute_support:
-        pytest.skip("Execute shellcode not implemented!")
 
     status = tester.client_initiate_data_transfer(shellcode_size)
     assert status == server_defs.ServerStatus.SERVER_SUCCESS.value
@@ -254,9 +241,6 @@ def test_execute_before_initiate(tester : et.EmulationTester):
     Test the expected server response when there's an attempt to execute a shellcode
     before a shellcode transfer was initiated.
     """
-    if not tester.server_config_data.have_execute_support:
-        pytest.skip("Execute shellcode not implemented!")
-
     status, _ = tester.client_call_shellcode()
     assert status == server_defs.ServerStatus.SERVER_INVALID_STATE.value
 
@@ -265,8 +249,6 @@ def test_shellcode_execute_sanity(tester : et.EmulationTester):
     """
     Test that executing a shellcode works as expected.
     """
-    if not tester.server_config_data.have_execute_support:
-        pytest.skip("Execute shellcode not implemented!")
     shellcode_func_bytes = tester.assemble_shellcode_func_asm()
 
     status, response_data_bytes = tester.client_execute_shellcode_binary(shellcode_func_bytes)

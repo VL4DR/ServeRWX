@@ -11,6 +11,10 @@ CMake is used as the configuration environment.
 As this is a library, the user is the one that is supposed to create the final executable. The following components are *required* from the user:
 - A toolchain file. This file defines which toolchain to use, compile flags, linker flags, etc. For reference, you can take a look at sample toolchain files for various CPU architectures under `tests/cmake`.
 - A linker script. This file defines the memory layout of the final binary, as well as what information to include and exclude from the final binary. For reference, you can take a look at a sample linker script that may be used with gcc-based toolchains at `tests/ld/ldscript.ld`.
+- An implementation of an architecture-specific cache-cleaning routine. Typically, that routine would flush a memory block from the processor's data cache to the PoU (point of unification), and in addition to that, would also invalidate the respective memory range within its instruction cache. Some architectures (like x86) do not require such routine, so an empty implementation may be provided (but in any case, it *must* be provided). The prototype of that routine is the following:
+```
+void arch__clear_cache_range(IN void *base_address, IN uint32_t size);
+```
 - The logic that glues the server to the target firmware. When the library is compiled, it exports a function symbol of the following prototype:
 ```
 void server__handle_request(IN struct server_request *request, OUT struct server_response *response);
@@ -51,12 +55,6 @@ void *utils__allocate_memory(IN uint32_t size);
 void utils__free_memory(IN void *ptr);
 ```
 The default value for this option is OFF.
-- `HAVE_EXECUTE_SUPPORT` - this option determines whether to include logic for executing arbitrary shellcodes.
-While in most cases it is useful to have support for this feature, there are cases in which it is crucial to keep the server binary as small as possible, so this option can control whether to drop support for this feature in exchange for smaller binary size. If this option is enabled, the user must provide an implementation of an architecture-specific cache-cleaning routine. Typically, that routine would flush a memory block from the processor's data cache to the PoU (point of unification), and in addition to that, would also invalidate the respective memory range within its instruction cache. Some architectures (like x86) do not require such routine, so an empty implementation may be provided (but in any case, it *must* be provided). The prototype of that routine is the following:
-```
-void arch__clear_cache_range(IN void *base_address, IN uint32_t size);
-```
-The default value for this option is ON.
 - `HAVE_CUSTOM_COMMAND` - this option determines whether there's a custom server command implementation. This option enables the user to extend the server's functionality without modifying its core by providing an implementation of their own to process custom server commands. The server supports a special command named `SERVER_OPCODE_CUSTOM` to support this feature; combined with the request header's `subcommand` field (see `include/server/core/server.h`), one can add support for many additional commands. If this option is enabled, the user must provide a command processing function of the following prototype:
 ```
 enum server_status server__handle_custom_command(IN struct server_request *request, OUT struct server_response *response);

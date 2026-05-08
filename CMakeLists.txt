@@ -7,7 +7,6 @@ project(server
 option(ENABLE_TEST  "Determines whether to compile a test server binary" ON)
 option(ENABLE_DEBUG "Determines whether to output the server's debug messages" OFF)
 option(ALLOCATE_SHELLCODE_BUFFER "Determines whether to allocate shellcode space using user-specified memory allocation routine" OFF)
-option(HAVE_EXECUTE_SUPPORT "Determines whether to include logic for executing arbitrary shellcodes" ON)
 option(HAVE_CUSTOM_COMMAND "Determines whether there's a custom server command implementation" OFF)
 option(SERVER_BIG_ENDIAN    "Determines whether the server code is big-endian based" OFF)
 
@@ -44,13 +43,6 @@ if (ALLOCATE_SHELLCODE_BUFFER)
     message(STATUS "Server is configured to allocate shellcode buffer")
 else ()
     message(STATUS "Server is configured to use bss space of size ${SERVER_SHELLCODE_BUFFER_SIZE} bytes")
-endif ()
-
-if (HAVE_EXECUTE_SUPPORT)
-    target_compile_definitions(server_core PRIVATE HAVE_EXECUTE_SUPPORT)
-    message(STATUS "Server is configured to include shellcode execution logic")
-else ()
-    message(STATUS "Server is configured without shellcode execution logic")
 endif ()
 
 if (HAVE_CUSTOM_COMMAND)
