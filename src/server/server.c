@@ -302,18 +302,22 @@ static void initialize_response(IN struct server_request *request, OUT struct se
 void server__handle_request(IN struct server_request *request, OUT struct server_response *response)
 {
     enum server_status status = SERVER_UNKNOWN;
-    uint32_t magic = request->header.magic;
+    uint32_t magic = 0;
     POSSIBLY_UNUSED_VARIABLE(g_server_context);
 
-    initialize_response(request, response);
+    if (NULL != request && NULL != response) {
+        magic = request->header.magic;
 
-    if (SERVER_MAGIC == magic) {
-        status = dispatch_request(request, response);
-    }
-    else {
-        DEBUG_LOG("Invalid magic detected: %08x\n", magic);
-        status = SERVER_INVALID_MAGIC;
-    }
+        initialize_response(request, response);
 
-    response->header.status = status;
+        if (SERVER_MAGIC == magic) {
+            status = dispatch_request(request, response);
+        }
+        else {
+            DEBUG_LOG("Invalid magic detected: %08x\n", magic);
+            status = SERVER_INVALID_MAGIC;
+        }
+
+        response->header.status = status;
+    }
 }

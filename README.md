@@ -1,12 +1,12 @@
-# Untitled
+# ServeRWX
 
 ## What is this?
-Untitled is a library which includes a basic implementation of Read-Write-Execute server which can be used for low-level security research.
+ServeRWX is a library which includes a basic implementation of Read-Write-Execute server which can be used for low-level security research.
 There any many cases in which full control over some device's firmware is desirable (for example, altering its functionality), and for that matter, it is very useful for security researchers to have the ability to dynamically interact with the device in a low-level manner. Debuggers (like gdb-stub) can be a useful tool to achieve this goal, but they may be unsuitable in certains situations.
-In addition, it can be useful in vulnerability exploitation. Not all exploitations are the same, and some might be limited in what they achieve (for example, an exploitation that gives the user the ability to write a very limited amount of bytes to an arbitrary location). In that case, if an exploitation is write-only, Untitled can be used to upgrade the feature-set of such exploitation to virtually anything.
+In addition, it can be useful in vulnerability exploitation. Not all exploitations are the same, and some might be limited in what they achieve (for example, an exploitation that gives the user the ability to write a very limited amount of bytes to an arbitrary location). In that case, if an exploitation is write-only, ServeRWX can be used to upgrade the feature-set of such exploitation to virtually anything.
 
 ## Compiling
-CMake is used as the configuration environment.
+CMake is used as the configuration tool.
 ### Compilation cookbook
 As this is a library, the user is the one that is supposed to create the final executable. The following components are *required* from the user:
 - A toolchain file. This file defines which toolchain to use, compile flags, linker flags, etc. For reference, you can take a look at sample toolchain files for various CPU architectures under `tests/cmake`.
@@ -60,8 +60,6 @@ The default value for this option is OFF.
 enum server_status server__handle_custom_command(IN struct server_request *request, OUT struct server_response *response);
 ```
 The default value for this option is OFF.
-- `SERVER_BIG_ENDIAN` - this option determines whether the server is built on a big-endian architecture.
-The default value for this option is OFF.
 - `SERVER_MAX_DATA_SIZE` - This variable sets the maximum data size for server requests and responses, effectively setting the maximum size of a single request/response message.
 The default value for this variable is 0x100.
 - `SERVER_MAGIC` - This variable sets the server's magic value which must be included in the headers of requests and responses.
@@ -73,16 +71,18 @@ The default value for this variable is 0x1000.
 There are some assumptions made during development, which are mostly to keep this repository simple.
 - Only 32-bit and 64-bit architectures where a byte equals 8-bits, and byte is the lowest addressable unit are supported. 
 - Some minor usage of non-standard pragma statements (like #pragma pack). Some compilers might not like that, but it appears that the major ones should be fine with that.
+- The server decodes values from incoming commands based on its endianess, which means the client interface must encode requests (and decode responses) based on the target CPU architecture. The reference client interface implementation provided in this repository assumes little-endian target endianess.
 
 ## Tests
 As mentioned before, the `ENABLE_TEST` cmake option determines whether a test server binary should be compiled. This binary is only suitable to be tested by the testing infrastructure defined in this repository.
 To test the server, we use `unicorn` to emulate its core functionality. The compiled server (using any configuration) can be tested when built for various ARM architectures, x86, x86_x64 and MIPS.
 `pytest` is used as the testing infrastructure of choice.
 The test cases themselves can be found in `tests/test_server.py`.
+The tests accept the binary path to the compiled test server binary and the config yaml file which contains the configuration chosen by the user.
 To run the tests:
 ```
 cd tests
-pytest test_server.py --server_binary_path ../build/tests/test_server.bin --arch {arm,arm_thumb,aarch64,x86,x86_64,mips}
+pytest test_server.py --server_binary_path ../build/tests/test_server.bin --server_config_path ../build/config.yaml --arch {arm,arm_thumb,aarch64,x86,x86_64,mips}
 ```
 
 Where the `arch` parameter is the architecture the library was configured to be compiled for by the provided toolchain file.
